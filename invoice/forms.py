@@ -35,15 +35,14 @@ class SettingForm(forms.ModelForm):
 class InvoiceForm(forms.ModelForm):
     class Meta:
         model = Invoice
-        fields = ['product', 'date_of_supply', 'branch', 'salesman_name', 'invoice_number',
-                  'invoice_issue_date', 'page_number', 'description', 'unit_price', 'quantity', 'discount', 'total',
+        fields = ['date_of_supply', 'branch', 'salesman_name', 'invoice_number',
+                  'invoice_issue_date', 'page_number', 'unit_price', 'quantity', 'discount', 'total',
                   'taxable_amount', 'tax_amount', 'tax_rate', 'total_vat', 'total_taxable_amount_exclude_vat',
                   'total_exclude_vat', 'total_amount_due', 'sub_total', 'buyer_organization_name', 'building_number', 
                   'street_name', 'district', 'city', 'country',
                   'postal_code', 'additional_number', 'vat_number', 'other_buyer_id']
 
     labels = {
-        'product': 'Product',
         'date_of_supply': 'Date Of Supply',
         'branch': 'Branch',
         'salesman_name': 'Sales Man Name',
@@ -62,7 +61,7 @@ class InvoiceForm(forms.ModelForm):
         'vat_number': 'Vat Number',
         'other_buyer_id': 'Other Buyer Id',
 
-        'description': 'Description',
+    
         'unit_price': 'Price',
         'quantity': 'Quantity',
         'discount': 'Discount',
@@ -77,7 +76,7 @@ class InvoiceForm(forms.ModelForm):
         'sub_total': 'Sub-Total'
 
     }
-InvoiceFormset = forms.inlineformset_factory(Product, Invoice, InvoiceForm, min_num=1, extra=0, can_delete=False)
+# InvoiceFormset = forms.inlineformset_factory(Product, Invoice, InvoiceForm, min_num=1, extra=0, can_delete=False)
 
 
 class ProductForm(forms.ModelForm):

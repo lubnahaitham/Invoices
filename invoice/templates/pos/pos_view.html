@@ -348,7 +348,7 @@
                     <tr>
                         <td>Item Code</td>
                         <td>item Name</td>
-                        <td>Description</td>
+                        {% comment %} <td>Description</td> {% endcomment %}
                         <td>Price</td>
                         <td>Quantity</td>
                         <td>Taxable Amount</td>
@@ -365,7 +365,7 @@
 
                         <td>{{product_data.item_code}}</td>
                         <td>{{product_data.item_name}}</td>
-                        <td>{{invoice_data.description}}</td>
+                        {% comment %} <td>{{invoice_data.description}}</td> {% endcomment %}
                         <td>{{invoice_data.unit_price}}</td>
                         <td>{{invoice_data.quantity}}</td>
                         <td>{{invoice_data.taxable_amount}}</td>
@@ -380,6 +380,10 @@
                 </table>
             </div>
 
+            
+
+            
+            
 
             <div class="col-md-12">
                 <table class="table table-bordered" style="width:320px;

@@ -5,3 +5,5 @@ from .models import Setting, Product, Invoice
 admin.site.register(Setting)
 admin.site.register(Product)
 admin.site.register(Invoice)
+
+

@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% load crispy_forms_tags %}
 {% block content %}
 {% block custom_css %}
@@ -378,40 +380,88 @@
 
                     </div>
 
+                </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                          <h5>Available Products: <small>Click the products to select </small></h5>
-                        </div>
-                        <div class="card-body">
-                          {% for product in products %}
-                            <a onclick="addItem({{ product.id }}, {{ product.item_code }}, {{ product.price }}, {{product.quantity}}, 
-                            )" class="btn btn-outline-dark">
-                            {{ product.item_code }} |
-                              {{ product.item_name }}
-                    
-                            </a>
-                          {% endfor %}
-                        </div>
+
+                    <div class="card-body">
+                        {% for product in products %}
+                        <a onclick="myFunction(
+                            {{product.id}}, '{{product.item_name}}', {{product.item_code}}, {{product.price}})" class="btn btn-outline-dark">
+                            {{ product.item_name }}
+                          </a> 
+                 
+                        {% endfor %}
                       </div>
                     </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="panel panel-default">
+                              <div class="panel-heading">
+                                <h4 class="panel-title"><strong>Order Summary</strong></h4>
+                              </div>
+                              <div class="panel-body">
+                                <div class="table-responsive">
+                                  <table class="table table-condensed">
+                                    <thead>
+                                      <tr>
+                                        <td class="text-right"><strong>Id</strong></td>
+                                        <td class="text-right"><strong>Item</strong></td>
+                                        <td class="text-right"><strong>Code</strong></td>
+                                        <td class="text-right"><strong>Price</strong></td>
+                                        <td class="text-right"><strong>Quantity</strong>
+                                        </td>
+                                      </tr>
+                                    </thead>
+                                    <tbody id="summary-table-body">
+                                      <tr id="total-tr">
+                                          {{bulk_product}}
+                                        {% comment %} <td class="thick-line text-right"><strong>Total: </strong></td>
+                                        <td class="thick-line text-right"><strong>C </strong></td>
+                                        <td class="thick-line text-right"><strong>$0 </strong></td></tr> {% endcomment %}
+                                      
+                                    </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                function myFunction(id, item_name, item_code, price) {
+                  var table = document.getElementById("summary-table-body");
+                  var row = table.insertRow(0);
+                  var td_id = row.insertCell(0);
+                  var td_name = row.insertCell(1);
+                  var td_code = row.insertCell(2);
+                  var td_price = row.insertCell(3);
+             
+                  td_id.innerHTML = '' + id;
+                  td_name.innerHTML = '' + item_name;
+                  td_code.innerHTML = '' + item_code;
+                  td_price.innerHTML = '' + price;
+                  tr.appendChild(td_id);
+                  tr.appendChild(td_name);
+                  tr.appendChild(td_code);
+                  tr.appendChild(td_price);
+                }
+                </script>
 
-                    <div class="column" >
+
+                    {% comment %} <div class="column" >
                         <table class="table table-striped">
                             <tbody>
                             <tr>
                                 <td>
-                                  
                                         <div class="row" id="field_1_container">
-                                            {% comment %} {{formset}} {% endcomment %}
-
-                          
-                                         <div class="col-md-2">
-                                            {{invoice_form.product|as_crispy_field}}
-                                        </div>
-                                        <div class="col-md-2">
-                                            {{invoice_form.description|as_crispy_field}}
-                                        </div>
+                                           
                                         <div class="col-md-1">
                                             {{invoice_form.unit_price|as_crispy_field}}
                                         </div>
@@ -440,9 +490,9 @@
                             </tr>
                             </tbody>
                         </table>
-                    </div>    
-                    
-                    <div id="field_2_container"></div>
+                    </div>     {% endcomment %}
+
+                    {% comment %} <div id="field_2_container"></div>
                     <button onclick="addField2(event)">Add field</button>
 
    <script>
@@ -452,12 +502,6 @@
         var input = `
         <div class="row">
 
-     <div class="col-md-2">
-        {{invoice_form.product|as_crispy_field}}
-    </div>
-    <div class="col-md-2">
-        {{invoice_form.description|as_crispy_field}}
-    </div>
     <div class="col-md-1">
         {{invoice_form.unit_price|as_crispy_field}}
     </div>
@@ -487,7 +531,7 @@
       }
     </script>
             </div>
-        
+         {% endcomment %}
           
 
                 <br>
@@ -527,7 +571,7 @@
 
 
 <!-- New working outside the form -->
-{% comment %} <form id="form-container" method="POST">
+ {% comment %} <form id="form-container" method="POST">
  {% csrf_token %}
 
     <div class="pos-form">
@@ -591,7 +635,8 @@ let newForm = birdForm[0].cloneNode(true)
 
      totalForms.setAttribute('value', `${formNum + 1}`)
     }
-</script> {% endcomment %}
+</script>  {% endcomment %}
 
+<script src="{% static 'js/script.js' %}"></script>
 
 {% endblock %}
