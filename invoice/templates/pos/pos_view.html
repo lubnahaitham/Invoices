@@ -348,7 +348,6 @@
                     <tr>
                         <td>Item Code</td>
                         <td>item Name</td>
-                        {% comment %} <td>Description</td> {% endcomment %}
                         <td>Price</td>
                         <td>Quantity</td>
                         <td>Taxable Amount</td>
@@ -365,8 +364,7 @@
 
                         <td>{{product_data.item_code}}</td>
                         <td>{{product_data.item_name}}</td>
-                        {% comment %} <td>{{invoice_data.description}}</td> {% endcomment %}
-                        <td>{{invoice_data.unit_price}}</td>
+                        <td>{{product_data.price}}</td>
                         <td>{{invoice_data.quantity}}</td>
                         <td>{{invoice_data.taxable_amount}}</td>
                         <td>{{invoice_data.discount}}</td>
@@ -380,13 +378,9 @@
                 </table>
             </div>
 
-            
-
-            
-            
 
             <div class="col-md-12">
-                <table class="table table-bordered" style="width:320px;
+                <table class="table table-bordered" style="width:700px;
     float:right;">
 
                     <tr>
@@ -416,6 +410,7 @@
 
 
                 </table>
+                <img src="{% static 'images/encoded_img2.png' %}" alt="qrcode" style="width:300px">
             </div>
 
             
@@ -426,6 +421,7 @@
 
                 <button id="btnPrint" class="hidden-print">Print</button>
             </div>
+          
 
             <script>
                 const $btnPrint = document.querySelector("#btnPrint");

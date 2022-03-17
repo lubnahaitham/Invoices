@@ -31,6 +31,8 @@ class Product(models.Model):
         max_length=200, null=True, blank=True)
     item_name = models.CharField(max_length=200, null=True, blank=True)
     price = models.FloatField(null=True, blank=True)
+   
+ 
     
 
     def __str__(self):
@@ -72,7 +74,7 @@ class Invoice(models.Model):
     setting = models.ForeignKey(Setting, on_delete=models.CASCADE, null=True, blank=True)
 
     # description = models.CharField(max_length=300, null=True, blank=True)
-    unit_price = models.FloatField(null=True, blank=True)
+    price = models.FloatField(null=True, blank=True)
     quantity = models.FloatField(null=True, blank=True)
     taxable_amount = models.FloatField(null=True, blank=True)
     tax_amount = models.FloatField(null=True, blank=True)
@@ -80,25 +82,26 @@ class Invoice(models.Model):
     total_vat = models.FloatField(null=True, blank=True)
     total_taxable_amount_exclude_vat = models.FloatField(null=True, blank=True)
     total_exclude_vat = models.FloatField(null=True, blank=True)
+    total = models.FloatField(null=True, blank=True)
     total_amount_due = models.FloatField(null=True, blank=True)
     discount = models.FloatField(null=True, blank=True)
-    total = models.FloatField(null=True, blank=True)
     sub_total = models.FloatField(null=True, blank=True)
     # qr=models.ImageField(upload_to = get_file_path, blank=True)
 
  
 
-    def save(self, *args, **kwargs):
-        self.taxable_amount = self.unit_price * self.quantity
-        self.tax_amount = self.taxable_amount * self.tax_rate / 100
-        self.sub_total = self.taxable_amount + self.tax_amount
+    # def save(self, *args, **kwargs):
+       
+    #     self.taxable_amount = self.price * self.quantity
+    #     self.tax_amount = self.taxable_amount * self.tax_rate / 100
+    #     self.sub_total = self.taxable_amount + self.tax_amount
 
-        self.total_exclude_vat = self.taxable_amount
-        self.total_taxable_amount_exclude_vat = self.taxable_amount
-        self.total_vat = self.tax_amount
-        self.total_amount_due = self.total_vat + self.total_exclude_vat
+    #     self.total_exclude_vat = self.taxable_amount
+    #     self.total_taxable_amount_exclude_vat = self.taxable_amount
+    #     self.total_vat = self.tax_amount
+    #     self.total_amount_due = self.total_vat + self.total_exclude_vat
 
-        super(Invoice, self).save(*args, **kwargs)
+    #     super(Invoice, self).save(*args, **kwargs)
 
     
     # def save(self,*args,**kwargs):

@@ -138,3 +138,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# from django.conf.locale.es import formats as es_formats
+
+# es_formats.DATETIME_FORMAT = "d M Y H:i:s"
