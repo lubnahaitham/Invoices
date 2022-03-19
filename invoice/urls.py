@@ -29,7 +29,6 @@ urlpatterns = [
     path('invoice/view/<int:id>/', views.invoice_view, name='invoice_view'),
     path('invoice/delete/<int:id>/', views.invoice_delete, name='invoice_delete'),
 
-    # path('pos/',views.pos, name='pos'),
 
 
 

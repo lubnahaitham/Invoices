@@ -128,12 +128,16 @@
                         <tr>
                             <td style="text-align:center">Invoice Number</td>
                             <td>{{invoice_form.invoice_number}}</td>
+                            {% comment %} <td><input type="number" name="invoice_number" class="form-control"></td> {% endcomment %}
+
                                
 
                             <td style="text-align:center"> رقم الفاتوره</td>
                         </tr>
                         <tr>
                             <td style="text-align:center"> Invoice issue Date</td>
+                            {% comment %} <td><input type="date" name="invoice_issue_date" class="form-control"></td> {% endcomment %}
+
                             <td>{{invoice_form.invoice_issue_date}}</td>
                                           
 
@@ -358,11 +362,11 @@
                 </div>
                 <div class="card-body">
                     {% for product in products %}
-                    <a onclick="myFunction(
+                    <a id="b" onclick="myFunction(
                             '{{product.id}}' , '{{product.item_name}}', '{{product.item_code}}', '{{product.price}}')"
                         class="btn btn-outline-dark">
                         {{ product.item_name }}
-                    </a>
+                </a>
 
                     {% endfor %}
                 </div>
@@ -414,7 +418,7 @@
 
                                                         <td>Total</td>
                                                         <td>
-                                                            <input type="number" id="total">
+                                                            <input type="number" name="total" id="total">
                                                         </td>
 
 
@@ -426,14 +430,14 @@
                                                         <td>Discount</td>
 
                                                         <td>
-                                                            <input type="number" id="discount" value="0">
+                                                            <input type="number" name="discount" id="discount" value="0">
                                                         </td>
                                                     </tr>
                                                     <tr>
 
                                                         <td>Total Taxable Amount</td>
                                                         <td>
-                                                            <input type="number" id="total_amount">
+                                                            <input type="number" name="total_taxable_amount_exclude_vat" id="total_amount">
                                                         </td>
 
 
@@ -443,14 +447,14 @@
                                                         <td>Total VAT</td>
 
                                                         <td>
-                                                            <input type="number" id="total_vat">
+                                                            <input type="number" name="total_vat" id="total_vat">
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td>Total Amount Due</td>
 
                                                         <td>
-                                                            <input type="number" id="amount_due">
+                                                            <input type="number" name="total_amount_due" id="amount_due">
                                                         </td>
                                                     </tr>
                                                
@@ -559,13 +563,51 @@
                                    console.log(total_amount_due);
                                    $("#amount_due").val(total_amount_due);
 
+                               
+
                                 });
 
                             });
+                          
+             
                         }
-
-
                     });
+                        
+                    $("#b1").onclick(function(e){
+                        e.preventDefault();
+                    $.ajax({
+                        url : "invoice_create/", // the endpoint
+                        type : "POST", // http method
+                        data : { 
+                            id: $(this).val(),
+                            for (let j = 1; j <= rowCount; j++) {
+                            quantity : $('#quant' + j).val(),
+                            taxable_amount : $('#taxable_amount' + j).val(),
+                            tax_rate: $('#tax' + j).val(),
+                            tax_amount: $('#tax_amount'+ j).val(),
+                            sub_total: $('#sub_total'+ j).val(), 
+                            }
+                        }, // data sent with the post request
+                
+                        // handle a successful response
+                        success : function (json) {
+                            $('#quant').val('');
+                            $('#taxable_amount').val('');
+                            $('#tax').val('');
+                            $('#tax_amount').val('');
+                            $('#sub_total').val(''); // remove the value from the input
+                            console.log(json); // log the returned json to the console
+                            console.log("success"); // another sanity check
+                            $("#talk").prepend("<li><strong>"+json.price+"</strong> - <em> "+json.quantity+"</em> - <span> "+json.taxable_amount+"</span></li>");
+                            console.log("success"); // another sanity check
+                        },
+                    });
+                });
+                   
+                        
+    
+
+                 
                     /*tr.appendChild(td_id);*/
                     tr.appendChild(td_name);
                    /* tr.appendChild(td_code);*/
@@ -576,6 +618,7 @@
                     tr.appendChild(td_tax_amount);
                     tr.appendChild(td_sub_total);
 
+               
                 }
 
             </script>
