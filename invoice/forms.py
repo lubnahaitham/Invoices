@@ -14,20 +14,18 @@ class CreateUserForm(UserCreationForm):
 class SettingForm(forms.ModelForm):
     class Meta:
         model = Setting
-        fields = ['organization_name', 'building_number', 'street_name', 'district', 'city', 'country',
-                  'postal_code', 'additional_number', 'vat_number', 'other_seller_id']
+        fields = ['supplier_name', 'supplier_site', 'vat_registratoion_number', 'attention',
+                  'reference_number', 'reference_number_one', 'telephone_number', 'branch', 'attention_one']
+
+  
 
     labels = {
-        'organization_name': 'Organization Name',
-        'building_number': 'Building Number',
-        'street_name': 'Street Name',
-        'district': 'District',
-        'city': 'City',
-        'country': 'Country',
-        'postal_code': 'Postal Code',
-        'additional_number': 'Additional Number',
-        'vat_number': 'Vat Number',
-        'other_seller_id': 'Other Seller Id'
+        'supplier_name': 'Supplier Name',
+        'supplier_site': 'Supplier Site',
+        'vat_registratoion_number': 'Vat Registration Number',
+        'attention': 'Attention',
+        'reference_number': 'Reference Number',
+        'telephone_number': 'Telephone Number',
     }
 
 
@@ -81,11 +79,13 @@ class InvoiceForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['item_code', 'item_name', 'item_name_in_arabic', 'price']
+        fields = ['item_code', 'note', 'uom', 'item_name', 'item_name_in_arabic', 'price']
 
     labels = {
         'item_code': 'Item Code',
         'item_name': 'Item Name',
+        'note': 'Note',
+        'uom': 'UOM',
         'item_name_in_arabic': 'Item Name In Arabic',
         'price': 'Price'
     }

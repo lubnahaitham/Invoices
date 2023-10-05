@@ -14,6 +14,8 @@ urlpatterns = [
 
     # setting
     path('setting/create/', views.setting_create, name='setting_create'),
+    path('setting/update/<int:id>/', views.setting_update, name='setting_update'),
+
 
 
     # product

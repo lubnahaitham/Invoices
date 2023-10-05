@@ -14,23 +14,25 @@ from django.utils.timezone import now
 
 
 class Setting(models.Model):
-    organization_name = models.CharField(max_length=300, null=True, blank=True)
-    building_number = models.IntegerField(null=True, blank=True)
-    street_name = models.CharField(max_length=150, null=True, blank=True)
-    district = models.CharField(max_length=150, null=True, blank=True)
-    city = models.CharField(max_length=300, null=True, blank=True)
-    country = models.CharField(max_length=300, null=True, blank=True)
-    postal_code = models.IntegerField(null=True, blank=True)
-    additional_number = models.CharField(max_length=150, null=True, blank=True)
-    vat_number = models.IntegerField(null=True, blank=True)
-    other_seller_id = models.CharField(max_length=150, null=True, blank=True)
+    supplier_name = models.CharField(max_length=300, null=True, blank=True)
+    supplier_site = models.CharField(max_length=300, null=True, blank=True)
+    vat_registratoion_number = models.CharField(max_length=300, null=True, blank=True)
+    attention = models.CharField(max_length=150, null=True, blank=True)
+    attention_one= models.CharField(max_length=150, null=True, blank=True)
+    reference_number = models.CharField(max_length=300, null=True, blank=True)
+    reference_number_one = models.CharField(max_length=300, null=True, blank=True)
+    telephone_number = models.CharField(max_length=300, null=True, blank=True)
+    branch = models.CharField(max_length=300, null=True, blank=True)
+  
 
 class Product(models.Model):
     item_code = models.CharField(max_length=100, null=True, blank=True)
     item_name_in_arabic = models.CharField(
         max_length=200, null=True, blank=True)
     item_name = models.CharField(max_length=200, null=True, blank=True)
-    price = models.FloatField(null=True, blank=True)
+    note = models.CharField(max_length=200, null=True, blank=True)
+    uom = models.CharField(max_length=200, null=True, blank=True)
+    price = models.CharField(max_length=100, null=True, blank=True)
    
  
     
@@ -44,33 +46,31 @@ class Invoice(models.Model):
     """This is the client data model, it holds all client information. This
            docstring has to be improved."""
 
-    def number():
-        no = Invoice.objects.count()
-        if no == None:
-            return 1
-        else:
-            return no + 1
+    # def number():
+    #     no = Invoice.objects.count()
+    #     if no == None:
+    #         return 1
+    #     else:
+    #         return no + 1
             
     date_of_supply = models.DateField(null=True, blank=True)
     branch = models.CharField(max_length=300, null=True, blank=True)
     salesman_name = models.CharField(max_length=300, null=True, blank=True)
-    invoice_number = models.IntegerField(null=True, blank=True, unique=True, default=number)
+    invoice_number = models.IntegerField(null=True, blank=True, default=1)
     invoice_issue_date = models.DateTimeField(default=now, null=True, blank=True)
     page_number = models.IntegerField(null=True, blank=True)
 
     # buyer data
-    buyer_organization_name = models.CharField(max_length=200, null=True, blank=True)
-    building_number = models.IntegerField(null=True, blank=True)
-    street_name = models.CharField(max_length=150, null=True, blank=True)
-    district = models.CharField(max_length=150, null=True, blank=True)
-    city = models.CharField(max_length=300, null=True, blank=True)
-    country = models.CharField(max_length=300, null=True, blank=True)
-    postal_code = models.IntegerField(null=True, blank=True)
-    additional_number = models.CharField(max_length=150, null=True, blank=True)
-    vat_number = models.IntegerField(null=True, blank=True)
-    other_buyer_id = models.CharField(max_length=150, null=True, blank=True)
+    requistion_number = models.IntegerField(null=True, blank=True)
+    buyer_name = models.CharField(max_length=150, null=True, blank=True)
+    ship_to = models.CharField(max_length=150, null=True, blank=True)
+    sub_inventroy = models.CharField(max_length=150, null=True, blank=True)
+    bill_to = models.CharField(max_length=300, null=True, blank=True)
+    
 
-    product = models.ManyToManyField(Product, null=True, blank=True)
+    # product = models.ManyToManyField(Product, through='Data')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+
     setting = models.ForeignKey(Setting, on_delete=models.CASCADE, null=True, blank=True)
 
     # description = models.CharField(max_length=300, null=True, blank=True)
@@ -101,7 +101,7 @@ class Invoice(models.Model):
     #     self.total_vat = self.tax_amount
     #     self.total_amount_due = self.total_vat + self.total_exclude_vat
 
-    #     super(Invoice, self).save(*args, **kwargs)
+        # super(Invoice, self).save(*args, **kwargs)
 
     
     # def save(self,*args,**kwargs):
@@ -127,4 +127,12 @@ class Invoice(models.Model):
     #     self.qr.save(filename, ContentFile(out.getvalue()), save=False)
        
     #     super().save(*args ,**kwargs)
+
+
+class Data(models.Model):
+    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+
+    class Meta:
+        unique_together = [['invoice', 'product']]
 

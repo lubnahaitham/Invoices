@@ -21,6 +21,9 @@
         #pos {
             display: none !important;
         }
+        #photo {
+            display: none !important;
+        }
     }
 </style>
 {% endblock custom_css %}
@@ -40,7 +43,7 @@
     <div class="card-body">
         <img src="{% static 'images/new-logo-white.png' %}" alt="Logo"
              class="bi me-2 " style=" height: calc(calc(4.5rem + 3px) * .6);
-  width: auto; margin-left: 10px">
+  width: auto; margin-left: 10px" id ='photo'>
         <div class="btn-group" style="float: right;">
 
             <div class="col-md-3" id="home">

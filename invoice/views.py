@@ -4,7 +4,7 @@ import json
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
 from django.forms import inlineformset_factory
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
 from .decorators import unauthenticated_user
@@ -86,6 +86,18 @@ def setting_create(request, id=0):
             form.save()
         return redirect('/invoice/list')
 
+def setting_update(request, id):
+    setting = get_object_or_404(Setting, pk=id)
+    form = SettingForm(instance=setting)
+
+    if request.method == 'POST':
+        form = SettingForm(request.POST, instance=setting)
+        if form.is_valid():
+            form.save()
+            return redirect('/product/list')
+
+    context = {'form': form}
+    return render(request, 'setting/setting_update.html', context)
 
 # Product
 def product_list(request):
@@ -145,11 +157,15 @@ def invoice_pos_list(request):
 
 def invoice_view(request, id):
     setting_data_view=Setting.objects.get(id=1)
+    # item_code = request.GET.get('item_code')
+    # item_name_in_arabic = request.GET.get('item_name_in_arabic')
+    # item_name = request.GET.get('item_name')
+    # price = request.GET.get('price')
     product_data = Product.objects.get(pk=id)
     invoice_data = Invoice.objects.get(pk=id)
     qrt="f"
-    comp=get_tl_vfor_value(1,str(setting_data_view.organization_name))#get_tl_vfor_value(1,"Bobs Records")
-    vat_num = get_tl_vfor_value(2,str(setting_data_view.vat_number))#get_tl_vfor_value(2,"310122393500003")
+    comp=get_tl_vfor_value(1,str(setting_data_view.supplier_name))#get_tl_vfor_value(1,"Bobs Records")
+    vat_num = get_tl_vfor_value(2,str(setting_data_view.vat_registratoion_number))#get_tl_vfor_value(2,"310122393500003")
     order_date = get_tl_vfor_value(3,str(invoice_data.invoice_issue_date))#get_tl_vfor_value(3,"2022-04-25T15:30:00Z")
     tot_amount = get_tl_vfor_value(4,str(invoice_data.total_amount_due))#get_tl_vfor_value(4,"1000.00")
     vat_amount = get_tl_vfor_value(5, str(invoice_data.total_vat))#get_tl_vfor_value(5, "150.00")
@@ -161,6 +177,9 @@ def invoice_view(request, id):
     print(qrt)
     url = pyqrcode.create(qrt)
     png = url.png('static/images/encoded_img2.png', scale = 4)
+
+    # new_product = models.Product(item_code=item_code, item_name=item_name, price=price)
+    
     
     context = {'setting_data_view': setting_data_view,
                'invoice_data': invoice_data, 'product_data': product_data, 'png':png}
@@ -199,6 +218,7 @@ def get_tl_vfor_value(tagnum, tagvalue):
 # polldict={}
 
 def invoice_create(request):
+    
     setting_data = Setting.objects.get(id=1)
     products = list(Product.objects.all())
     invoice_form = InvoiceForm(request.POST or None)
@@ -208,23 +228,20 @@ def invoice_create(request):
     page_number = request.POST.get('page_number')
 
     # buyer data
-    buyer_organization_name = request.POST.get('buyer_organization_name')
-    building_number = request.POST.get('building_number')
-    street_name = request.POST.get('street_name')
-    district = request.POST.get('district')
-    city = request.POST.get('city')
-    country = request.POST.get('country')
-    postal_code = request.POST.get('postal_code')
-    additional_number = request.POST.get('additional_number')
-    vat_number = request.POST.get('vat_number')
-    other_buyer_id = request.POST.get('other_buyer_id')
-
+    requistion_number = request.POST.get('requistion_number')
+    buyer_name = request.POST.get('buyer_name')
+    ship_to = request.POST.get('ship_to')
+    sub_inventroy = request.POST.get('sub_inventroy')
+    bill_to = request.POST.get('bill_to')
+    
 
     discount = request.POST.get('discount')
     total_vat = request.POST.get('total_vat')
     total_taxable_amount_exclude_vat = request.POST.get('total_taxable_amount_exclude_vat')
     total_amount_due = request.POST.get('total_amount_due')
     total = request.POST.get('total')
+
+    
 
     
     # total_exclude_vat = request.POST.get('total_exclude_vat')
@@ -242,24 +259,44 @@ def invoice_create(request):
 
     sub_total = request.POST.get('sub_total')
 
-
-
+   
     new_invoice = models.Invoice(date_of_supply=date_of_supply, branch=branch, salesman_name=salesman_name,
-                                 page_number=page_number, buyer_organization_name=buyer_organization_name, 
-                                 building_number=building_number, street_name=street_name, district=district, city=city, country=country,
-                                 postal_code=postal_code, additional_number=additional_number, vat_number=vat_number, 
-                                 other_buyer_id=other_buyer_id, discount=discount,
+                                 page_number=page_number, requistion_number=requistion_number, 
+                                 buyer_name=buyer_name, ship_to=ship_to, sub_inventroy=sub_inventroy,
+                                 bill_to=bill_to, discount=discount,
                                  total_taxable_amount_exclude_vat=total_taxable_amount_exclude_vat, total_vat=total_vat,  
                                  total_amount_due=total_amount_due, total=total, quantity=quantity,
                                  tax_amount=tax_amount, tax_rate=tax_rate, 
                                  sub_total=sub_total, taxable_amount=taxable_amount)
+
+
     new_invoice.save()
+
+    # qrcode
+    qrt="f"
+    comp=get_tl_vfor_value(1,str(setting_data.supplier_name))#get_tl_vfor_value(1,"Bobs Records")
+    vat_num = get_tl_vfor_value(2,str(setting_data.vat_registratoion_number))#get_tl_vfor_value(2,"310122393500003")
+    order_date = get_tl_vfor_value(3,str(new_invoice.invoice_issue_date))#get_tl_vfor_value(3,"2022-04-25T15:30:00Z")
+    tot_amount = get_tl_vfor_value(4,str(new_invoice.total_amount_due))#get_tl_vfor_value(4,"1000.00")
+    vat_amount = get_tl_vfor_value(5, str(new_invoice.total_vat))#get_tl_vfor_value(5, "150.00")
+    tagsbuff = comp+vat_num+order_date+tot_amount+vat_amount
+    print(tagsbuff)
+    conv_bytes = bytes.fromhex(tagsbuff.hex())
+    qrt1 = base64.b64encode(conv_bytes)
+    qrt=str(qrt1.decode())
+    print(qrt)
+    url = pyqrcode.create(qrt)
+    png = url.png('static/images/encoded_img2.png', scale = 4)
+
+
+
 
   
     context = {
         "setting_data": setting_data,
         "products": products,
         "invoice_form": invoice_form,
+        "png": "png",
 
     }
 
@@ -274,6 +311,12 @@ def invoice_create(request):
 
     
 
+def get_tl_vfor_value(tagnum, tagvalue):
+    tagBuf = int(tagnum).to_bytes(1,byteorder="big")
+    tagValueLenBuf= int(len(str(tagvalue))).to_bytes(1,byteorder="big")
+    tagValueBuf = bytes(str(tagvalue),'utf-8')
+    bufarr = tagBuf+tagValueLenBuf+tagValueBuf
+    return bufarr
   
 
 
